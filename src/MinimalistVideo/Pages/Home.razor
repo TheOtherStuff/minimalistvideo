@@ -1,67 +1,88 @@
 ﻿@page "/"
-@implements IDisposable
-@using MinimalistVideo.Components
 @using OneOf
 @using OneOf.Types
-@inject PersistentComponentState ApplicationState
 
-<MudContainer Fixed="true" MaxWidth="MaxWidth.Medium">
-    <Loader Loaded="@_pageLoaded">
-        @if (ValidVimeo)
-        {
-            <div style="padding:56.25% 0 0 0;position:relative;">
-                <iframe src="@($"https://player.vimeo.com/video/{Vimeo}{(string.IsNullOrWhiteSpace(VimeoHash) ? string.Empty : $"?h={VimeoHash}")}")" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" data-ready="true" style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
-            </div>
-        }
-        <MudStack Style="width:100%; height:100%; position:relative;">
-            <MudStack Row="true">
-                <MudSpacer />
-                <MudCard>
-                    @if (ValidYouTube)
-                    {
-                        <iframe src="@($"https://www.youtube.com/embed/{YouTube}{StartTime.Match(s => $"?start={s.TotalSeconds}", none => string.Empty)}")"
-                        width="560"
-                        height="315"
-                        title="YouTube video player"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
-                        </iframe>
-                    }
-
-                    @if (ValidTikTok)
-                    {
-                        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@@@(TikTokUserHandle)/video/@TikTok" data-video-id="@TikTok" style="max-width: 605px;min-width: 325px;">
-                            <section />
-                        </blockquote>
-                        <script async src="https://www.tiktok.com/embed.js"></script>
-                    }
-
-                    @if (ValidWistia)
-                    {
-                        <iframe src="//fast.wistia.net/embed/iframe/@Wistia?videoFoam=true" allowtransparency="true" frameborder="0"
-                        scrolling="no" class="wistia_embed" name="wistia_embed" allowfullscreen mozallowfullscreen
-                        webkitallowfullscreen oallowfullscreen msallowfullscreen width="1000" height="563"></iframe>
-                        <script src="//fast.wistia.net/assets/external/iframe-api-v1.js"></script>
-                        <script charset="ISO-8859-1" src="//fast.wistia.com/assets/external/E-v1.js"></script>
-                    }
-
-                    @if (!(ValidYouTube || ValidVimeo || ValidTikTok || ValidWistia))
-                    {
-                        <MudText Align="Align.Center">Video Failed to Load</MudText>
-                    }
-                </MudCard>
-                <MudSpacer />
-            </MudStack>
+@if (ValidYouTube)
+{
+    <MudStack Style="width:100%; height:100%; position:relative;">
+        <MudSpacer />
+        <MudStack Row="true">
+            <MudSpacer />
+            <MudCard>
+                <iframe src="@($"https://www.youtube.com/embed/{YouTube}{StartTime.Match(s => $"?start={s.TotalSeconds}", none => string.Empty)}")"
+                width="560"
+                height="315"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
+                </iframe>
+            </MudCard>
             <MudSpacer />
         </MudStack>
-    </Loader>
-</MudContainer>
+        <MudSpacer />
+    </MudStack>
+}
+
+@if (ValidVimeo)
+{
+    <div style="padding:56.25% 0 0 0;position:relative;">
+        <iframe src="@($"https://player.vimeo.com/video/{Vimeo}{(string.IsNullOrWhiteSpace(VimeoHash) ? string.Empty : $"?h={VimeoHash}")}")" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" data-ready="true" style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+    </div>
+}
+
+@if (ValidTikTok)
+{
+    <MudStack Style="width:100%; height:100%; position:relative;">
+        <MudSpacer />
+        <MudStack Row="true">
+            <MudSpacer />
+            <MudCard>
+                <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@@@(TikTokUserHandle)/video/@TikTok" data-video-id="@TikTok" style="max-width: 605px;min-width: 325px;">
+                    <section/> 
+                </blockquote>
+                <script async src="https://www.tiktok.com/embed.js"></script>
+            </MudCard>
+            <MudSpacer />
+        </MudStack>
+        <MudSpacer />
+    </MudStack>
+}
+
+@if (ValidWistia)
+{
+    <MudStack Style="width:100%; height:100%; position:relative;">
+        <MudSpacer />
+        <MudStack Row="true">
+            <MudSpacer />
+            <MudCard>
+                <iframe src="//fast.wistia.net/embed/iframe/@Wistia?videoFoam=true" allowtransparency="true" frameborder="0"
+                scrolling="no" class="wistia_embed" name="wistia_embed" allowfullscreen mozallowfullscreen
+                webkitallowfullscreen oallowfullscreen msallowfullscreen width="1000" height="563"></iframe>
+                <script src="//fast.wistia.net/assets/external/iframe-api-v1.js"></script>
+                <script charset="ISO-8859-1" src="//fast.wistia.com/assets/external/E-v1.js"></script>
+            </MudCard>
+            <MudSpacer />
+        </MudStack>
+        <MudSpacer />
+    </MudStack>
+}
+
+@if ( !(ValidYouTube || ValidVimeo || ValidTikTok || ValidWistia) )
+{
+    <MudStack Style="width:100%; height:100%; position:relative;">
+        <MudSpacer />
+        <MudStack Row="true">
+            <MudSpacer />
+            <MudCard>
+                <MudText Align="Align.Center">Video Failed to Load</MudText>
+            </MudCard>
+            <MudSpacer />
+        </MudStack>
+        <MudSpacer />
+    </MudStack>
+}
 
 @code {
-    private bool _pageLoaded = false;
-    private PersistingComponentStateSubscription _persistingSubscription;
-    private OneOf<PrerenderedState, None> _prerenderedState = new None();
-
     [SupplyParameterFromQuery(Name = "y")]
     public string? YouTube { get; set; }
 
@@ -92,49 +113,4 @@
     private bool ValidVimeo => !string.IsNullOrWhiteSpace(Vimeo);
     private bool ValidTikTok => !string.IsNullOrWhiteSpace(TikTok) && !string.IsNullOrWhiteSpace(TikTokUserHandle);
     private bool ValidWistia => !string.IsNullOrWhiteSpace(Wistia);
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        // remove placeholder UI 
-        if(!_pageLoaded)
-        {
-            if ((_prerenderedState.IsT1 && firstRender) || (_prerenderedState.IsT0))
-            {
-                this.InvokeAsync(() =>
-                      {
-                          _pageLoaded = true;
-
-                          this.StateHasChanged();
-                      });
-            }
-        }     
-    }
-
-    protected override void OnInitialized()
-    {
-        _persistingSubscription = ApplicationState.RegisterOnPersisting(PersistComponentStateAsync);
-
-        if (!ApplicationState.TryTakeFromJson<PrerenderedState>("fetchdata", out var restored))
-        {
-            _prerenderedState = new None();
-        }
-        else
-        {
-            _prerenderedState = restored!;
-        }
-    }
-
-    private Task PersistComponentStateAsync()
-    {
-        ApplicationState.PersistAsJson("fetchdata", new PrerenderedState());
-
-        return Task.CompletedTask;
-    }
-
-    void IDisposable.Dispose()
-    {
-        _persistingSubscription.Dispose();
-    }
-
-    private class PrerenderedState;
 }
