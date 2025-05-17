@@ -1,5 +1,6 @@
 ﻿@page "/"
 @implements IDisposable
+@using Microsoft.AspNetCore.Http
 @using MinimalistVideo.Components
 @using OneOf
 @using OneOf.Types
@@ -19,7 +20,21 @@
                 <MudCard>
                     @if (ValidYouTube)
                     {
-                        <iframe src="@($"https://www.youtube.com/embed/{YouTube}{StartTime.Match(s => $"?start={s.TotalSeconds}", none => string.Empty)}")"
+                        var videoParameters = new QueryString();
+
+                        // clip
+                        if (!string.IsNullOrWhiteSpace(ClipId) && !string.IsNullOrWhiteSpace(ClipTimestamp))
+                        {
+                            videoParameters = videoParameters.Add("clip", ClipId).Add("clipt", ClipTimestamp);
+                        }
+                        
+                        // start
+                        if (StartTime.TryPickT0(out var startTime, out _))
+                        {
+                            videoParameters = videoParameters.Add("start", ((int)startTime.TotalSeconds).ToString());
+                        }
+                        
+                        <iframe src="@($"https://www.youtube.com/embed/{YouTube}{videoParameters.ToString()}")"
                         width="560"
                         height="315"
                         title="YouTube video player"
@@ -86,6 +101,12 @@
     [SupplyParameterFromQuery(Name = "s")]
     private string? Start { get; set; }
 
+    [SupplyParameterFromQuery(Name = "clip")]
+    private string? ClipId { get; set; }
+    
+    [SupplyParameterFromQuery(Name = "clipt")]
+    private string? ClipTimestamp { get; set; }
+    
     private OneOf<TimeSpan, None> StartTime => int.TryParse(Start, out var parsedStart) ? TimeSpan.FromSeconds(parsedStart) : new None();
 
     private bool ValidYouTube => !string.IsNullOrWhiteSpace(YouTube);
