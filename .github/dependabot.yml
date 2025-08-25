@@ -5,3 +5,7 @@ updates:
     target-branch: "dev"
     schedule:
       interval: "daily"
+    groups:
+      open-source-license:
+        patterns:
+          - "*"
